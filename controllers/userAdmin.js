@@ -1,3 +1,4 @@
+const { connect } = require('http2');
 const User = require('../models/user');
 
 exports.postSignUp=async (req,res,next)=>{
@@ -18,5 +19,26 @@ exports.postSignUp=async (req,res,next)=>{
         }
         
         console.log(err)
+    }
+}
+
+exports.postLogin= async (req,res,next)=>{
+    try{
+        let email = req.body.email;
+        let password = req.body.email;
+        const user = await User.findAll({where:{email:email}});
+        if (user.length>0){
+            if (user[0].dataValues.password!=password){
+                return res.status(404).json({msg:'wrong password'});
+            }
+            else{
+                return res.status(200).json({user:user[0]});
+            }
+            
+        }
+        res.status(404).json({msg:'user not found'});
+    }
+    catch(err){
+        console.log(err);
     }
 }
