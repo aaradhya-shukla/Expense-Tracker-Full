@@ -1,15 +1,17 @@
 const { connect } = require('http2');
 const User = require('../models/user');
+const bcrypt = require('bcrypt');
 
 exports.postSignUp=async (req,res,next)=>{
     try{
         let name = req.body.name;
         let email = req.body.email;
         let password = req.body.password;
+        const hash = await bcrypt.hash(password,10)
         const user = await User.create({
             name:name,
             email:email,
-            password:password
+            password:hash
         });
         res.status(200).json({msg:"successfully signed in"});
     }
@@ -25,11 +27,12 @@ exports.postSignUp=async (req,res,next)=>{
 exports.postLogin= async (req,res,next)=>{
     try{
         let email = req.body.email;
-        let password = req.body.email;
+        let password = req.body.password;
         const user = await User.findAll({where:{email:email}});
         if (user.length>0){
-            if (user[0].dataValues.password!=password){
-                return res.status(404).json({msg:'wrong password'});
+            const hash = await bcrypt.compare(password,user[0].dataValues.password)
+            if (!hash){
+                return res.status(401).json({msg:'wrong password'});
             }
             else{
                 return res.status(200).json({user:user[0]});
