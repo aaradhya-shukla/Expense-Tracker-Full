@@ -1,7 +1,7 @@
 const { connect } = require('http2');
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
-
+const jwt = require('jsonwebtoken');
 exports.postSignUp=async (req,res,next)=>{
     try{
         let name = req.body.name;
@@ -24,6 +24,10 @@ exports.postSignUp=async (req,res,next)=>{
     }
 }
 
+function generateToken(id){
+    return jwt.sign({userId:id},'secretkey');
+}
+
 exports.postLogin= async (req,res,next)=>{
     try{
         let email = req.body.email;
@@ -35,7 +39,7 @@ exports.postLogin= async (req,res,next)=>{
                 return res.status(401).json({msg:'wrong password'});
             }
             else{
-                return res.status(200).json({user:user[0]});
+                return res.status(200).json({userid:user[0],token:generateToken(user[0].id)});
             }
             
         }
