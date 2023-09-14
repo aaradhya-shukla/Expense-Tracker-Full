@@ -1,5 +1,7 @@
 const express = require('express');
 
+require('dotenv').config();
+
 const bodyParser = require('body-parser');
 
 var cors = require('cors');
@@ -10,9 +12,13 @@ const signUp = require('./routes/signUp');
 
 const expenseManager = require('./routes/expense');
 
+const razorpayHandler = require('./routes/purchase');
+
 const User = require('./models/user');
 
 const Expense = require('./models/expense');
+
+const Order = require('./models/orders');
 
 const app = express();
 
@@ -24,8 +30,12 @@ app.use('/user',signUp);
 
 app.use('/expense',expenseManager);
 
+app.use('/purchase',razorpayHandler)
+
 User.hasMany(Expense);
 Expense.belongsTo(User);
+User.hasMany(Order);
+Order.belongsTo(User);
 
 sequelize.sync().
 then(()=>{
