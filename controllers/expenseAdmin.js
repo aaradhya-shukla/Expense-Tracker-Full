@@ -30,6 +30,8 @@ exports.postAddExpense = async (req,res,next) =>{
             description:description,
             category:category
         })
+        user.totalExpense = user.totalExpense + + expense;
+        user.save();
         res.status(200).json({expenses:exp})
     }
     catch(err){

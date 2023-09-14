@@ -4,6 +4,7 @@ const User = require('../models/user');
 const Razorpay = require('razorpay');
 
 const jwt = require('jsonwebtoken');
+const sequelize = require('../util/database');
 
 exports.createPurchaseOrder = async (req,res,next)=>{
         console.log("oooooooooooooooooooooo")
@@ -72,6 +73,23 @@ exports.postUpdatePaymentStatus= async(req,res,next)=>{
             user.save();
             res.status(500).json({msg:'failed'});
         }
+    }
+    catch(err){
+        console.log(err)
+    }
+}
+
+exports.getLeaderBoard = async (req,res,next)=>{
+    try{
+        const user = req.user;
+        const users = await User.findAll({
+            attributes: ['name', 'totalExpense'],
+            order:[
+                ['totalExpense','DESC']
+            ]
+        })
+        console.log('here',users);
+        res.status(200).json({users:users});
     }
     catch(err){
         console.log(err)

@@ -8,4 +8,6 @@ router.get('/purchase-premium',Premium.authenticate,Premium.createPurchaseOrder)
 
 router.post('/updatePurchaseStatus',Premium.authenticate,Premium.postUpdatePaymentStatus);
 
+router.get('/get-leaderBoard',Premium.authenticate,Premium.getLeaderBoard);
+
 module.exports = router;
