@@ -4,9 +4,13 @@ const User = require('../models/user');
 const Razorpay = require('razorpay');
 
 const jwt = require('jsonwebtoken');
+
 const sequelize = require('../util/database');
 
+
+
 exports.createPurchaseOrder = async (req,res,next)=>{
+        const tr = await sequelize.transaction();
         console.log("oooooooooooooooooooooo")
         try{
             var rzp = new Razorpay({
@@ -21,15 +25,20 @@ exports.createPurchaseOrder = async (req,res,next)=>{
                     throw new Error(JSON.stringify(err));
                 }
                 try{
+                    
                     console.log("hey")
                     const order_item = await req.user.createOrder({
                         orderId:order.id,
                         status:'PENDING'
-                    })
+                    },{
+                        transaction:tr
+                    });
+                    await tr.commit();
                     res.status(201).json({order, key_id:rzp.key_id});
                 }
                 catch(err){
-                    console.log(err)
+                    console.log(err);
+                    await tr.rollback();
                 }
                 
             })
@@ -53,29 +62,36 @@ exports.authenticate = async(req,res,next)=>{
 }
 
 exports.postUpdatePaymentStatus= async(req,res,next)=>{
+    const tr = await sequelize.transaction();
+    const tr1 = await sequelize.transaction();
+
     try{
+        
         const order_id= req.body.orderId;
         const payment_id = req.body.paymentId;
         const status = req.body.status;
         const user = req.user;
         
-        const order = await user.getOrders({where:{orderId:order_id}});
+        const order = await user.getOrders({where:{orderId:order_id}},{transaction:tr});
         order[0].purchaseId = payment_id;
         order[0].status = status;
         order[0].save();
         if (status!="FAILED"){
             user.isPremium=true
-            user.save();
+            await user.save({transaction:tr1});
+            await tr1.commit();
             res.status(201).json({msg:'success'});
         }
         else{
             user.isPremium=false
-            user.save();
+            await user.save({transaction:tr1});
+            await tr1.commit();
             res.status(500).json({msg:'failed'});
         }
     }
     catch(err){
         console.log(err)
+        await tr.rollback();
     }
 }
 

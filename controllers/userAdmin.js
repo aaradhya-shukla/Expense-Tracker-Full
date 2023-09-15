@@ -2,8 +2,11 @@ const { connect } = require('http2');
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const sequelize = require('../util/database');
 exports.postSignUp=async (req,res,next)=>{
+    const tr = await sequelize.transaction();
     try{
+        
         let name = req.body.name;
         let email = req.body.email;
         let password = req.body.password;
@@ -12,14 +15,15 @@ exports.postSignUp=async (req,res,next)=>{
             name:name,
             email:email,
             password:hash
-        });
+        },{transaction:tr});
+        await tr.commit();
         res.status(200).json({msg:"successfully signed in"});
     }
     catch(err){
         if (err.name==="SequelizeUniqueConstraintError"){
             res.status(500).json({msg:'user email id already exists'})
         }
-        
+        await tr.rollback();
         console.log(err)
     }
 }
