@@ -32,6 +32,8 @@ app.use('/expense',expenseManager);
 
 app.use('/purchase',razorpayHandler)
 
+app.use('/password',signUp)
+
 User.hasMany(Expense);
 Expense.belongsTo(User);
 User.hasMany(Order);
