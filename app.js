@@ -14,11 +14,15 @@ const expenseManager = require('./routes/expense');
 
 const razorpayHandler = require('./routes/purchase');
 
+const passwordManager = require('./routes/passwordReset');
+
 const User = require('./models/user');
 
 const Expense = require('./models/expense');
 
 const Order = require('./models/orders');
+
+const ForgotPasswordRequests = require('./models/password');
 
 const app = express();
 
@@ -32,12 +36,15 @@ app.use('/expense',expenseManager);
 
 app.use('/purchase',razorpayHandler)
 
-app.use('/password',signUp)
+app.use('/password',passwordManager);
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
 User.hasMany(Order);
 Order.belongsTo(User);
+User.hasMany(ForgotPasswordRequests);
+ForgotPasswordRequests.belongsTo(User);
+
 
 sequelize.sync().
 then(()=>{

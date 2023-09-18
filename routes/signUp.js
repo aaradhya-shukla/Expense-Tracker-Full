@@ -8,6 +8,5 @@ router.post('/signUp',userAdmin.postSignUp);
 
 router.post('/login',userAdmin.postLogin);
 
-router.post('/forgotpassword',userAdmin.postForgotPassword)
 
 module.exports=router;

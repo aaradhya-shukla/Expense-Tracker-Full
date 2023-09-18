@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const sequelize = require('../util/database');
 const brevo = require('@getbrevo/brevo');
+const { v4: uuidv4 } = require('uuid');
 
 exports.postSignUp=async (req,res,next)=>{
     const tr = await sequelize.transaction();
@@ -56,31 +57,3 @@ exports.postLogin= async (req,res,next)=>{
     }
 }
 
-exports.postForgotPassword = (req,res,next)=>{
-    const email = req.body.email
-    let defaultClient = brevo.ApiClient.instance;
-    let apiKey = defaultClient.authentications['api-key'];
-    apiKey.apiKey = process.env.API_KEY_BREVO;
-    let apiInstance = new brevo.TransactionalEmailsApi();
-let sendSmtpEmail = new brevo.SendSmtpEmail();
-
-sendSmtpEmail.subject = "My {{params.subject}}";
-sendSmtpEmail.htmlContent = "<html><body><h1>Password Reset {{params.parameter}}</h1></body></html>";
-sendSmtpEmail.sender = { "name": "Aaradhya", "email": "aaradhya.shukla229@gmail.com" };
-sendSmtpEmail.to = [
-  { "email": `${email}`, "name": "sample-name" }
-];
-sendSmtpEmail.replyTo = { "email": "example@brevo.com", "name": "sample-name" };
-sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
-sendSmtpEmail.params = { "parameter": "hey I am aaradhya", "subject": "Request to Reset Password" };
-
-
-apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
-  console.log('API called successfully. Returned data: ' + JSON.stringify(data));
-}, function (error) {
-  console.error(error);
-});
-
-
-
-}

@@ -20,6 +20,7 @@
     "mysql2": "^3.6.1",
     "nodemon": "^3.0.1",
     "razorpay": "^2.9.2",
-    "sequelize": "^6.33.0"
+    "sequelize": "^6.33.0",
+    "uuid": "^9.0.1"
   }
 }
