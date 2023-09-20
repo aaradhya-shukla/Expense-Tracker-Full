@@ -12,4 +12,8 @@ router.get('/get-expense',expenseAdmin.authenticate,expenseAdmin.getExpense);
 
 router.get('/delete-expense/:id',expenseAdmin.authenticate,expenseAdmin.getDeleteExpense);
 
+router.get('/download-report',expenseAdmin.authenticate,expenseAdmin.getDownloadLink);
+
+router.get('/download-history',expenseAdmin.authenticate,expenseAdmin.getDownloadHistory);
+
 module.exports = router;

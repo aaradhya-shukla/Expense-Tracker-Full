@@ -6,8 +6,9 @@ const jwt = require('jsonwebtoken');
 
 const sequelize = require('../util/database');
 
+const aws = require('aws-sdk');
 
-
+const Download = require('../models/download')
 
 exports.getExpense = async (req,res,next) =>{
     try{
@@ -85,5 +86,79 @@ exports.authenticate = async(req,res,next)=>{
     }
     catch(err){
         console.log(err);
+    }
+}
+
+
+async function uploadtoS3(data,FileName){
+    try{
+        const BUCKET_NAME = process.env.BUCKET_NAME;
+        const ACCESS_KEY = process.env.ACCESS_KEY;
+        const SECRET_KEY = process.env.AWS_SECRET_KEY;
+        const S3 = new aws.S3({
+        accessKeyId:ACCESS_KEY,
+        secretAccessKey:SECRET_KEY
+    });
+    var params = {
+        Bucket : BUCKET_NAME,
+        Key : FileName,
+        Body : data,
+        ACL : 'public-read'
+        }
+
+    return new Promise((resolve,reject)=>{
+        S3.upload(params,(err,s3response)=>{
+            if(err){
+                throw new Error(err)
+                reject(err);
+            }
+            else{
+                resolve(s3response.Location)
+            }
+        })
+    }) 
+    }
+    catch(err){
+        console.log(err);
+        
+    }
+    }
+    
+    
+exports.getDownloadLink = async(req,res,next)=>{
+    try{
+        const userId = req.userId.userId;
+        const expense = await Expense.findAll({
+            where:{
+                userId:userId,
+            }
+        })
+        const stringfiedExpenses = JSON.stringify(expense);
+        const FileName = `Expense-Report.txt${req.userId.userId}/${new Date()}`;
+        const fileUrl = await uploadtoS3(stringfiedExpenses,FileName);
+        const user = await User.findByPk(userId);
+        const download = await user.createDownload({
+            url:fileUrl
+        })
+        res.status(200).json({fileUrl,success:true})
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json({fileUrl:'',success:false,err:err})
+    }
+}
+
+exports.getDownloadHistory=async(req,res,next)=>{
+    const userId = req.userId.userId;
+    try{
+        const downloads = await Download.findAll({
+            where:{
+                userId:userId,
+            }
+        })
+        res.status(200).json({downloads:downloads});
+    }
+    catch(err){
+        console.log(err)
     }
 }

@@ -24,6 +24,8 @@ const Order = require('./models/orders');
 
 const ForgotPasswordRequests = require('./models/password');
 
+const Download = require('./models/download');
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -44,6 +46,8 @@ User.hasMany(Order);
 Order.belongsTo(User);
 User.hasMany(ForgotPasswordRequests);
 ForgotPasswordRequests.belongsTo(User);
+User.hasMany(Download);
+Download.belongsTo(User);
 
 
 sequelize.sync().
