@@ -15,7 +15,27 @@ exports.getExpense = async (req,res,next) =>{
         const id = req.userId.userId;
         const user = await User.findByPk(id);
         const expenses = await user.getExpenses();
-        res.status(200).json({expenses:expenses,user:user});
+        
+        const page = req.query.page;
+        let start = (page-1)*10;
+        let end = start+10;
+        let page_expense = expenses.slice(start,end);
+        let haspreviusPage=0;
+        let hasnextPage=0;
+        if(page-1>0){
+            haspreviusPage=page-1
+        }
+        if(start<expenses.length){
+            console.log("yessss")
+            hasnextPage=1 + + page;
+            console.log('page=',page,page_expense)
+            res.status(200).json({expenses:page_expense,user:user,currentPage:page,haspreviusPage:haspreviusPage,hasnextPage:hasnextPage});
+        }
+        else if (start>expenses.length){
+            console.log(end,expenses.length)
+            res.status(200).json({expenses:[],user:user,currentPage:page,haspreviusPage:haspreviusPage,hasnextPage:hasnextPage});
+        }
+        
     }
     catch(err){
         console.log(err)
