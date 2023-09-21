@@ -8,7 +8,7 @@ const expenseAdmin = require('../controllers/expenseAdmin');
 
 router.post('/add-expense',expenseAdmin.authenticate,expenseAdmin.postAddExpense);
 
-router.get('/get-expense',expenseAdmin.authenticate,expenseAdmin.getExpense);
+router.post('/get-expense',expenseAdmin.authenticate,expenseAdmin.getExpense);
 
 router.get('/delete-expense/:id',expenseAdmin.authenticate,expenseAdmin.getDeleteExpense);
 
