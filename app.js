@@ -6,6 +6,12 @@ const bodyParser = require('body-parser');
 
 var cors = require('cors');
 
+const helmet = require('helmet');
+
+const morgan = require('morgan');
+
+const fs = require('fs');
+
 const sequelize = require('./util/database');
 
 const signUp = require('./routes/signUp');
@@ -26,7 +32,15 @@ const ForgotPasswordRequests = require('./models/password');
 
 const Download = require('./models/download');
 
+const path = require('path');
+
 const app = express();
+
+const accessLogStream = fs.createWriteStream(path.join(__dirname,'access.logs'),{flags:'a'});
+
+app.use(helmet());
+
+app.use(morgan('combined',{stream:accessLogStream}));
 
 app.use(bodyParser.json());
 
@@ -52,6 +66,6 @@ Download.belongsTo(User);
 
 sequelize.sync().
 then(()=>{
-    app.listen(3000);
+    app.listen(process.env.PORT);
 })
 .catch(err=>console.log(err))
