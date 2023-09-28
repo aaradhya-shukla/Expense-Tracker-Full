@@ -44,7 +44,7 @@ app.use(morgan('combined',{stream:accessLogStream}));
 
 app.use(bodyParser.json());
 
-//app.use(cors());
+app.use(cors());
 
 app.use('/user',signUp);
 
@@ -53,6 +53,15 @@ app.use('/expense',expenseManager);
 app.use('/purchase',razorpayHandler)
 
 app.use('/password',passwordManager);
+
+const { expressCspHeader, INLINE, NONE, SELF } = require('express-csp-header')
+// other app.use() options ...
+app.use(expressCspHeader({ 
+    policies: { 
+        'default-src': [expressCspHeader.NONE], 
+        'img-src': [expressCspHeader.SELF], 
+    } 
+})); 
 
 app.use((req,res)=>{
     res.sendFile(path.join(__dirname,`public/${req.url}`))
