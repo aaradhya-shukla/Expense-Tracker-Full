@@ -54,6 +54,10 @@ app.use('/purchase',razorpayHandler)
 
 app.use('/password',passwordManager);
 
+app.use((req,res)=>{
+    res.sendFile(path.join(__dirname,`public/${req.url}`))
+})
+
 User.hasMany(Expense);
 Expense.belongsTo(User);
 User.hasMany(Order);
