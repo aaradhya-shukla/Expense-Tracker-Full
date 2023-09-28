@@ -44,7 +44,7 @@ app.use(morgan('combined',{stream:accessLogStream}));
 
 app.use(bodyParser.json());
 
-app.use(cors());
+//app.use(cors());
 
 app.use('/user',signUp);
 
