@@ -45,7 +45,7 @@
         window.addEventListener('DOMContentLoaded', async ()=>{
             try{
                 // console.log(token)
-                const result = await axios.get('http://3.82.235.149:3000/purchase/get-leaderBoard',{headers:{'authurization':token}});
+                const result = await axios.get('http://54.210.91.135/purchase/get-leaderBoard',{headers:{'authurization':token}});
                 // console.log(result.data.expenses)
                 const users=result.data.users;
                 //show(result.data.expenses,userObj);

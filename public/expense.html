@@ -150,7 +150,7 @@
        async function getExpense(page){
         try{
             let rows = localStorage.getItem('rows')
-            const result = await axios.post(`http://3.82.235.149:3000/expense/get-expense?page=${page}`,{rows:rows},{headers:{'authurization':token}});
+            const result = await axios.post(`http://54.210.91.135/expense/get-expense?page=${page}`,{rows:rows},{headers:{'authurization':token}});
             let {expenses,user,currentPage,haspreviousPage,hasnextPage}=result.data;
             helper(expenses,user,currentPage,haspreviousPage,hasnextPage)
         }
@@ -161,7 +161,7 @@
         }
         window.addEventListener('DOMContentLoaded', async ()=>{
             try{
-            const result = await axios.post(`http://3.82.235.149:3000/expense/get-expense?page=1`,{rows:rows},{headers:{'authurization':token}});
+            const result = await axios.post(`http://54.210.91.135/expense/get-expense?page=1`,{rows:rows},{headers:{'authurization':token}});
             let {expenses,user,currentPage,haspreviousPage,hasnextPage}=result.data;
             postPremium(user.isPremium)
             helper(expenses,user,currentPage,haspreviousPage,hasnextPage)
@@ -198,7 +198,7 @@
                 // const id = searchParams.get('id');
                 // console.log(id)
                 form.reset();
-                const result = await axios.post('http://3.82.235.149:3000/expense/add-expense',expObj,{headers:{authurization:token}});
+                const result = await axios.post('http://54.210.91.135/expense/add-expense',expObj,{headers:{authurization:token}});
                 show([result.data.expenses],null)
             }
             catch(err){
@@ -244,7 +244,7 @@
             e.preventDefault();
             try{
                 const id = e.target.id;
-                const result = await axios.get(`http://3.82.235.149:3000/expense/delete-expense/${id}`,{headers:{
+                const result = await axios.get(`http://54.210.91.135/expense/delete-expense/${id}`,{headers:{
                     authurization:token
                 }})
                 ul.removeChild(e.target.parentNode);
@@ -257,7 +257,7 @@
         async function buyPremium(e){
             
             try{
-                const result = await axios.get('http://3.82.235.149:3000/purchase/purchase-premium',{headers:{
+                const result = await axios.get('http://54.210.91.135/purchase/purchase-premium',{headers:{
                     authurization:token
                 }})
                 console.log("prem:",result);
@@ -267,7 +267,7 @@
                     'handler': async (response)=>{
                         try{
                             console.log(response)
-                            const res = await axios.post('http://3.82.235.149:3000/purchase/updatePurchaseStatus',{
+                            const res = await axios.post('http://54.210.91.135/purchase/updatePurchaseStatus',{
                                 orderId:options.order_id,
                                 paymentId:response.razorpay_payment_id,
                                 status:'SUCCESSFUL'
@@ -294,7 +294,7 @@
                     console.log(response)
                     alert('payment has failed')
                     try{
-                        const res = await axios.post('http://3.82.235.149:3000/purchase/updatePurchaseStatus',{
+                        const res = await axios.post('http://54.210.91.135/purchase/updatePurchaseStatus',{
                                 orderId:options.order_id,
                                 purchaseId:response.razorpay_payment_id,
                                 status:'FAILED'
@@ -316,7 +316,7 @@
         async function download(e){
             e.preventDefault();
             try{
-                const result = await axios.get('http://3.82.235.149:3000/expense/download-report',{
+                const result = await axios.get('http://54.210.91.135/expense/download-report',{
                     headers:{
                         authurization:token
                     }
@@ -342,7 +342,7 @@
         async function historyy(e){
             e.preventDefault();
             try{
-                const result = await axios.get('http://3.82.235.149:3000/expense/download-history',{
+                const result = await axios.get('http://54.210.91.135/expense/download-history',{
                     headers:{
                         authurization:token
                     }

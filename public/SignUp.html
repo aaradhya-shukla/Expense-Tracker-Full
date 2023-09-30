@@ -83,7 +83,7 @@
             email:email,
             password:password
           }
-          const result = await axios.post('https://3.82.235.149:3000/user/signUp',userObj);
+          const result = await axios.post('http://54.210.91.135/user/signUp',userObj);
           form.reset()
           if (result.status==200){
             location.replace("./login.html")

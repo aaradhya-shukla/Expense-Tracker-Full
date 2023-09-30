@@ -141,7 +141,7 @@
             email:email,
             password:password
           }
-          const result = await axios.post('http://3.82.235.149:3000/user/login',userObj);
+          const result = await axios.post('http://54.210.91.135/user/login',userObj);
           form.reset()
           alert('User logged in Successfully');
           if (result.status==200){
@@ -177,7 +177,7 @@
         console.log('heree')
         e.preventDefault()
         try{
-          const res = await axios.post('http://3.82.235.149:3000/password/forgotpassword',{
+          const res = await axios.post('http://54.210.91.135/password/forgotpassword',{
             email:document.getElementById('email-reset').value
           })
         }
